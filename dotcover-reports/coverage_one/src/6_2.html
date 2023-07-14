@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>C:\Users\Mahes\dotnet\ASPNETCore-WebAPI-Sample\SampleWebApiAspNetCore\Repositories\FoodSqlRepository.cs</title>
+    <script type="text/javascript" src="../js/dotcover.sourceview.js"></script>
+    <link rel="stylesheet" type="text/css" href="../css/dotcover.report.css" />
+  </head>
+  <body>
+    <pre id="content" class="source-code">
+using SampleWebApiAspNetCore.Entities;
+using SampleWebApiAspNetCore.Helpers;
+using SampleWebApiAspNetCore.Models;
+using System.Linq.Dynamic.Core;
+
+namespace SampleWebApiAspNetCore.Repositories
+{
+    public class FoodSqlRepository : IFoodRepository
+    {
+        private readonly FoodDbContext _foodDbContext;
+
+        public FoodSqlRepository(FoodDbContext foodDbContext)
+        {
+            _foodDbContext = foodDbContext;
+        }
+
+        public FoodEntity GetSingle(int id)
+        {
+            return _foodDbContext.FoodItems.FirstOrDefault(x =&gt; x.Id == id);
+        }
+
+        public void Add(FoodEntity item)
+        {
+            _foodDbContext.FoodItems.Add(item);
+        }
+
+        public void Delete(int id)
+        {
+            FoodEntity foodItem = GetSingle(id);
+            _foodDbContext.FoodItems.Remove(foodItem);
+        }
+
+        public FoodEntity Update(int id, FoodEntity item)
+        {
+            _foodDbContext.FoodItems.Update(item);
+            return item;
+        }
+
+        public IQueryable&lt;FoodEntity&gt; GetAll(QueryParameters queryParameters)
+        {
+            IQueryable&lt;FoodEntity&gt; _allItems = _foodDbContext.FoodItems.OrderBy(queryParameters.OrderBy,
+              queryParameters.IsDescending());
+
+            if (queryParameters.HasQuery())
+            {
+                _allItems = _allItems
+                    .Where(x =&gt; x.Calories.ToString().Contains(queryParameters.Query.ToLowerInvariant())
+                    || x.Name.ToLowerInvariant().Contains(queryParameters.Query.ToLowerInvariant()));
+            }
+
+            return _allItems
+                .Skip(queryParameters.PageCount * (queryParameters.Page - 1))
+                .Take(queryParameters.PageCount);
+        }
+
+        public int Count()
+        {
+            return _foodDbContext.FoodItems.Count();
+        }
+
+        public bool Save()
+        {
+            return (_foodDbContext.SaveChanges() &gt;= 0);
+        }
+
+        public ICollection&lt;FoodEntity&gt; GetRandomMeal()
+        {
+            List&lt;FoodEntity&gt; toReturn = new List&lt;FoodEntity&gt;();
+
+            toReturn.Add(GetRandomItem(&quot;Starter&quot;));
+            toReturn.Add(GetRandomItem(&quot;Main&quot;));
+            toReturn.Add(GetRandomItem(&quot;Dessert&quot;));
+
+            return toReturn;
+        }
+
+        private FoodEntity GetRandomItem(string type)
+        {
+            return _foodDbContext.FoodItems
+                .Where(x =&gt; x.Type == type)
+                .OrderBy(o =&gt; Guid.NewGuid())
+                .FirstOrDefault();
+        }
+    }
+}
+
+    </pre>
+    <script type="text/javascript">
+      highlightRanges([[12,9,12,62,1],[14,13,14,44,1],[15,9,15,10,1],[19,13,19,77,1],[24,13,24,48,1],[25,9,25,10,1],[29,13,29,49,0],[30,13,30,55,0],[31,9,31,10,0],[35,13,35,51,0],[36,13,36,25,0],[41,13,42,47,0],[44,13,44,44,0],[46,17,48,102,0],[51,13,53,50,0],[58,13,58,53,0],[63,13,63,56,1],[68,13,68,64,0],[70,13,70,52,0],[71,13,71,49,0],[72,13,72,52,0],[74,13,74,29,0],[79,13,82,35,0]]);
+    </script>
+  </body>
+</html>

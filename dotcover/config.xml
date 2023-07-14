@@ -1,0 +1,6 @@
+<AnalyseParams>
+	<TargetExecutable>C:\Users\Mahes\dotnet\ASPNETCore-WebAPI-Sample\SampleWebApiAspNetCore\bin\Debug\net7.0\SampleWebApiAspNetCore.exe</TargetExecutable>
+		<TargetWorkingDir></TargetWorkingDir>
+    	<Output>reporttt.xml</Output>
+    	<Instance>2</Instance>
+</AnalyseParams>
